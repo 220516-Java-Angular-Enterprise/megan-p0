@@ -14,6 +14,6 @@ public class MainMenu implements IMenu {
 
     @Override
     public void start() {
-        System.out.println("\nWelcome to my store" + user.getUsername());
+        System.out.println("\nWelcome to my store " + user.getUsername());
     }
 }
