@@ -4,7 +4,9 @@ package com.revature.project0.ui;
 
 import com.revature.project0.models.User;
 import com.revature.project0.services.UserService;
+import com.revature.project0.util.annotations.Inject;
 import com.revature.project0.ui.IMenu;
+import com.revature.project0.util.custom_exceptions.InvalidUserException;
 
 //Imports java libraries for more builtin functions
 import java.util.Scanner;
@@ -13,8 +15,10 @@ import java.util.UUID;
 public class StartMenu implements IMenu {
 
 //    makes it impossible for user to switch while in the program
+    @Inject
     private final UserService userService;
 
+    @Inject
     public StartMenu(UserService userService) {
         this.userService = userService;
     }
@@ -66,7 +70,29 @@ public class StartMenu implements IMenu {
     }
 
     private void login() {
-        System.out.println("\nNeeds implementation... Come back later!");
+        String username;
+        String password;
+        User user = new User();
+        Scanner scan = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nLogging in...");
+            System.out.print("\nUsername: ");
+            username = scan.nextLine();
+
+            System.out.print("\nPassword: ");
+            password = scan.nextLine();
+
+            try {
+                user = userService.login(username, password);
+
+                if (user.getRole().equals("ADMIN")) new AdminMenu().start();
+                else new MainMenu(user).start();
+                break;
+            } catch (InvalidUserException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private void signup() {
@@ -89,9 +115,12 @@ public class StartMenu implements IMenu {
                     username = scan.nextLine();
 
 //                    checks against regex to make sure username is valid
-                    if (userService.isValidUsername(username)) {
-                        break;
-                    } else System.out.println("\nInvalid Username. Must have 8-20 characters.");
+                    try {
+                        if (userService.isValidUsername(username))
+                            if (userService.isNotDuplicateUsername(username)) break;
+                        } catch (InvalidUserException e) {
+                        System.out.println((e.getMessage()));
+                    }
                 }
 
 //                creating/confirming password
@@ -100,17 +129,20 @@ public class StartMenu implements IMenu {
 //                    changes the value of password variable
                     password = scan.nextLine();
 
+                    try {
 //                    checks against regex to see if password is valid
-                    if (userService.isValidPassword(password)) {
-                        System.out.print("\nReEnter Password: ");
-
+                        if (userService.isValidPassword(password)) {
+                            System.out.print("\nReEnter Password: ");
 //                        creates a confirm variable to check against password
-                        String confirm = scan.nextLine();
+                            String confirm = scan.nextLine();
 
-                        if (password.equals(confirm)) break;
-                        else System.out.println("Password does not match...");
-                    } else
-                        System.out.println("Invalid password. Must have a minimum of 8 characters, at least one letter, one number and one special character.");
+                            if (password.equals(confirm)) break;
+                            else System.out.println("Password does not match...");
+                        }
+                    } catch (InvalidUserException e) {
+                            System.out.println(e.getMessage());
+                    }
+
                 }
 
 //                nested break label. Will allow for user to go back and add credentials again if answer "n"
@@ -127,6 +159,7 @@ public class StartMenu implements IMenu {
                         switch (input) {
                             case "y":
                                 User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
+                                userService.register(user);
                                 new MainMenu(user).start();
                                 break completeExit;
                             case "n":

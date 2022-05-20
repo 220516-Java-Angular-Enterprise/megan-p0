@@ -7,10 +7,11 @@ public class User {
     private String password;
     private String role;
 
-//    Create a new instance of the User for use in methods
-    public User() {}
+    //    Create a new instance of the User for use in methods
+    public User() {
+    }
 
-// Constructor for User Class (what info goes in)
+    // Constructor for User Class (what info goes in)
     public User(String id, String username, String password, String role) {
         this.id = id;
         this.username = username;
@@ -18,7 +19,7 @@ public class User {
         this.role = role;
     }
 
-//    Getters/Setters so that data can be retrieved and manipulated
+    //    Getters/Setters so that data can be retrieved and manipulated
     public String getId() {
         return id;
     }
@@ -51,7 +52,11 @@ public class User {
         this.role = role;
     }
 
-//    Allows for readable info to display in terminal instead of the Hashcode
+    public String toFileString() {
+        return id + ":" + username + ":" + password + ":" + role + "\n";
+    }
+
+    //    Allows for readable info to display in terminal instead of the Hashcode
     @Override
     public String toString() {
         return "User{" +
@@ -61,3 +66,4 @@ public class User {
                 '}';
     }
 }
+
