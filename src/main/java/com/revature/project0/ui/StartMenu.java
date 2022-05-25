@@ -1,11 +1,14 @@
 package com.revature.project0.ui;
 
 //Import files from other packages
-
+//daos
+import com.revature.project0.daos.UserDAO;
+//models
 import com.revature.project0.models.User;
+//services
 import com.revature.project0.services.UserService;
+//utils
 import com.revature.project0.util.annotations.Inject;
-import com.revature.project0.ui.IMenu;
 import com.revature.project0.util.custom_exceptions.InvalidUserException;
 
 //Imports java libraries for more builtin functions
@@ -86,6 +89,7 @@ public class StartMenu implements IMenu {
             try {
                 user = userService.login(username, password);
 
+//                need to add parameters to Admin menu function/main menu
                 if (user.getRole().equals("ADMIN")) new AdminMenu().start();
                 else new MainMenu(user).start();
                 break;
@@ -160,6 +164,7 @@ public class StartMenu implements IMenu {
                             case "y":
                                 User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
                                 userService.register(user);
+//                                need to pass more params into mainmenu
                                 new MainMenu(user).start();
                                 break completeExit;
                             case "n":
