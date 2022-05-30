@@ -57,4 +57,8 @@ public class UserService {
 
         return true;
     }
+
+    public User getUserById(String user_id) {
+        return null;
+    }
 }
