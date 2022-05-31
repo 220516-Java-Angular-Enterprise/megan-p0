@@ -6,21 +6,21 @@ public class Product {
     private String description;
     private int price;
     private int quantity;
-    private String order_id;
     private String category_id;
 
     public Product() {}
 
 
-    public Product(String id, String name, String description, int price, int quantity, String order_id, String category_id) {
+    public Product(String id, String name, String description, int price, int quantity, String category_id) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
-        this.order_id = order_id;
         this.category_id = category_id;
     }
+
+
 
     public String getId() {
         return id;
@@ -61,14 +61,6 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public String getOrder_id() {
-        return order_id;
-    }
-
-    public void setOrder_id(String order_id) {
-        this.order_id = order_id;
-    }
-
     public String getCategory_id() {
         return category_id;
     }
@@ -85,7 +77,6 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +
-                ", order_id='" + order_id + '\'' +
                 ", category_id='" + category_id + '\'' +
                 '}';
     }

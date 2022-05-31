@@ -10,22 +10,27 @@ public class ProductService {
     private final ProductDAO productDAO;
 
     public ProductService(ProductDAO productDAO) {
+        this.productDAO = productDAO;
+    }
+
+    public void register(Product prod) {
         productDAO.save(prod);
     }
+
     public List<Product> getAllProd() {
         return productDAO.getAll();
     }
 
-    public boolean updateQuant(String quantity, String id) {
+    public boolean updateQuant(int quantity, String id) {
         try {
             productDAO.updateProdQuant(quantity, id);
             return true;
         } catch (InvalidSQLException e) {
             System.out.println(e.getMessage());
         }
-
         return false;
     }
+
 
     public boolean updateName(String name, String id) {
         try {
@@ -37,6 +42,7 @@ public class ProductService {
 
         return false;
     }
+
 
     public boolean deleteProd(String id) {
         try {

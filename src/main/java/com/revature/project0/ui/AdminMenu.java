@@ -4,6 +4,8 @@ package com.revature.project0.ui;
 import com.revature.project0.models.User;
 import com.revature.project0.models.Product;
 //services
+import com.revature.project0.services.ProductService;
+
 //utils
 import com.revature.project0.util.annotations.Inject;
 
@@ -17,11 +19,14 @@ public class AdminMenu implements IMenu {
 
     @Inject
     private final User user;
+    private final ProductService productService;
 
 
     @Inject
-    public AdminMenu(User user) {
+    public AdminMenu(User user, ProductService productService) {
+
         this.user = user;
+        this.productService = productService;
     }
 
 

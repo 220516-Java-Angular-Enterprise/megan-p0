@@ -176,7 +176,7 @@ public class StartMenu implements IMenu {
                             case "y":
                                 User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
                                 userService.register(user);
-                                new MainMenu(user, new userService(newUserDAO()), new reviewService(new ReviewDAO()), new productService(new ProductDAO())).start();
+                                new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
                                 break completeExit;
                             case "n":
                                 break confirmExit;
