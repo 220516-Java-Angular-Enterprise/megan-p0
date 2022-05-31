@@ -6,18 +6,19 @@ public class Product {
     private String description;
     private int price;
     private int quantity;
-    private String category_id;
+
+    private String categories_id;
 
     public Product() {}
 
 
-    public Product(String id, String name, String description, int price, int quantity, String category_id) {
+    public Product(String id, String name, String description, int price, int quantity, String categories_id) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
-        this.category_id = category_id;
+        this.categories_id = categories_id;
     }
 
 
@@ -61,17 +62,13 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public String getCategory_id() {
-        return category_id;
+    public String getCategories_id() {
+        return categories_id;
     }
 
-    public void setCategory_id(String category_id) {
-        this.category_id = category_id;
+    public void setCategory_id(String categories_id) {
+        this.categories_id = categories_id;
     }
-
-//    public String toFileString() {
-//        return id + ":" + username + ":" + password + ":" + role + "\n";
-//    }
 
 
     @Override
@@ -82,7 +79,7 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +
-                ", category_id='" + category_id + '\'' +
+                ", category_id='" + categories_id + '\'' +
                 '}';
     }
 }

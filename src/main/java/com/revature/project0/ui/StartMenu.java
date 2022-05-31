@@ -2,17 +2,13 @@ package com.revature.project0.ui;
 
 //Import files from other packages
 //daos
-import com.revature.project0.daos.ProductDAO;
-import com.revature.project0.daos.ReviewDAO;
-import com.revature.project0.daos.UserDAO;
+import com.revature.project0.daos.*;
 //models
 import com.revature.project0.models.User;
 import com.revature.project0.models.Product;
 import com.revature.project0.models.Review;
 //services
-import com.revature.project0.services.ProductService;
-import com.revature.project0.services.ReviewService;
-import com.revature.project0.services.UserService;
+import com.revature.project0.services.*;
 //utils
 import com.revature.project0.util.annotations.Inject;
 import com.revature.project0.util.custom_exceptions.InvalidUserException;
@@ -96,9 +92,9 @@ public class StartMenu implements IMenu {
                 user = userService.login(username, password);
 
 //                need to add parameters to Admin menu function/main menu
-                if (user.getRole().equals("ADMIN")) new AdminMenu(user, new ProductService(new ProductDAO())).start();
+                if (user.getRole().equals("ADMIN")) new AdminMenu(user, new ProductService(new ProductDAO()), new StoreService(new StoreDAO())).start();
                 else
-                    new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
+                    new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO()), new CategoryService(new CategoryDAO())).start();
                 break;
             } catch (InvalidUserException e) {
                 System.out.println(e.getMessage());
@@ -220,7 +216,7 @@ public class StartMenu implements IMenu {
                                 case "y":
                                     User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT", fname, email, phone, sAddress, state);
                                     userService.register(user);
-                                    new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
+                                    new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO()), new CategoryService(new CategoryDAO())).start();
                                     break completeExit;
                                 case "n":
                                     break confirmExit;

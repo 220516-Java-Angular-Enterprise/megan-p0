@@ -17,13 +17,13 @@ public class ProductDAO implements CrudDAO<Product>{
     @Override
     public void save(Product obj) {
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO products (id, name, description, price, quantity, category_id) VALUES (?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO products (id, name, description, price, quantity, categories_id) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getName());
             ps.setString(3, obj.getDescription());
             ps.setInt(4, obj.getPrice());
             ps.setInt(5, obj.getQuantity());
-            ps.setString(6, obj.getCategory_id());
+            ps.setString(6, obj.getCategories_id());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -60,7 +60,7 @@ public class ProductDAO implements CrudDAO<Product>{
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                product = new Product(rs.getString("id"), rs.getString("name"), rs.getString("description"), rs.getInt("price"), rs.getInt("quantity"), rs.getString("category_id"));
+                product = new Product(rs.getString("id"), rs.getString("name"), rs.getString("description"), rs.getInt("price"), rs.getInt("quantity"), rs.getString("categories_id"));
             }
         } catch (SQLException e) {
             throw new RuntimeException("An error occurred when tyring to get data from to the database.");
@@ -79,10 +79,31 @@ public class ProductDAO implements CrudDAO<Product>{
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                products.add(new Product(rs.getString("id"), rs.getString("name"), rs.getString("description"), rs.getInt("price"), rs.getInt("quantity"), rs.getString("category_id")));
+                products.add(new Product(rs.getString("id"), rs.getString("name"), rs.getString("description"), rs.getInt("price"), rs.getInt("quantity"), rs.getString("categories_id")));
             }
         } catch (SQLException e) {
             throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+        }
+
+        return products;
+    }
+
+    public List<Product> getByCat(String id) {
+        List<Product> products = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM products where categories_id = ?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                products.add(new Product(rs.getString("id"), rs.getString("name"), rs.getString("description"), rs.getInt("price"), rs.getInt("quantity"), rs.getString("categories_id")));
+            }
+        } catch (SQLException e) {
+//            throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
         }
 
         return products;

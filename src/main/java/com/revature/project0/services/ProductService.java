@@ -21,6 +21,14 @@ public class ProductService {
         return productDAO.getAll();
     }
 
+    public List<Product> getAllByCat(String id) {
+        return productDAO.getByCat(id);
+    }
+
+    public Product getById(String id) {
+        return productDAO.getById(id);
+    }
+
     public boolean updateQuant(int quantity, String id) {
         try {
             productDAO.updateProdQuant(quantity, id);
