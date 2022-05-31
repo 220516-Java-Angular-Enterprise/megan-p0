@@ -23,19 +23,13 @@ import java.util.UUID;
 
 public class StartMenu implements IMenu {
 
-//    makes it impossible for user to switch while in the program
+    //    makes it impossible for user to switch while in the program
     @Inject
-    private final User user;
     private final UserService userService;
-    private final ProductService productService;
-    private final ReviewService reviewService;
 
     @Inject
-    public StartMenu(User user, UserService userService, ProductService productService, ReviewService reviewService) {
-        this.user = user;
+    public StartMenu(UserService userService) {
         this.userService = userService;
-        this.productService = productService;
-        this.reviewService = reviewService;
     }
 
 
@@ -103,7 +97,8 @@ public class StartMenu implements IMenu {
 
 //                need to add parameters to Admin menu function/main menu
                 if (user.getRole().equals("ADMIN")) new AdminMenu(user, new ProductService(new ProductDAO())).start();
-                else new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
+                else
+                    new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
                 break;
             } catch (InvalidUserException e) {
                 System.out.println(e.getMessage());
@@ -115,6 +110,12 @@ public class StartMenu implements IMenu {
 //        creating global variables so that they can be used anywhere in the StartMenu Class
         String username;
         String password;
+        String fname;
+        String role;
+        String email;
+        String phone;
+        String sAddress;
+        String state;
 //        need to recreate the scanner method in this function so that it can be used to take in input.
         Scanner scan = new Scanner(System.in);
 
@@ -134,7 +135,7 @@ public class StartMenu implements IMenu {
                     try {
                         if (userService.isValidUsername(username))
                             if (userService.isNotDuplicateUsername(username)) break;
-                        } catch (InvalidUserException e) {
+                    } catch (InvalidUserException e) {
                         System.out.println((e.getMessage()));
                     }
                 }
@@ -156,38 +157,82 @@ public class StartMenu implements IMenu {
                             else System.out.println("Password does not match...");
                         }
                     } catch (InvalidUserException e) {
-                            System.out.println(e.getMessage());
+                        System.out.println(e.getMessage());
                     }
-
                 }
 
+                while (true) {
+                    /*Asking user to enter in first name.*/
+                    System.out.print("\nFirst Name: ");
+                    fname = scan.nextLine();
+
+                    break ;
+                }
+
+                while (true) {
+                    /*Asking user to enter in username.*/
+                    System.out.print("\nEmail: ");
+                    email = scan.nextLine();
+                    break;
+                }
+
+                while (true) {
+                    /*Asking user to enter in username.*/
+                    System.out.print("\nPhone Number: ");
+                    phone = scan.nextLine();
+                    break;
+                }
+
+                while (true) {
+                    /*Asking user to enter in username.*/
+                    System.out.print("\nStreet Address: ");
+                    sAddress = scan.nextLine();
+                    break;
+                }
+
+                while (true) {
+                    /*Asking user to enter in username.*/
+                    System.out.print("\nState: ");
+                    state = scan.nextLine();
+                    break;
+                }
+
+
 //                nested break label. Will allow for user to go back and add credentials again if answer "n"
-                confirmExit:
-                {
-                    while (true) {
-                        System.out.println("\nPlease confirm your credentials (y/n)");
-                        System.out.println("\nUsername: " + username);
-                        System.out.println("\nPassword: " + password);
+                    confirmExit:
+                    {
+                        while (true) {
+                            System.out.println("\nPlease confirm your credentials (y/n)");
+                            System.out.println("\nUsername: " + username);
+                            System.out.println("\nPassword: " + password);
+                            System.out.println("\nFirst Name: " + fname);
+                            System.out.println("\nEmail: " + email);
+                            System.out.println("\nPhone Number: " + phone);
+                            System.out.println("\nStreet Address: " + sAddress);
+                            System.out.println("\nState: " + state);
 
-                        System.out.print("\nEnter (y/n): ");
-                        String input = scan.nextLine();
 
-                        switch (input) {
-                            case "y":
-                                User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
-                                userService.register(user);
-                                new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
-                                break completeExit;
-                            case "n":
-                                break confirmExit;
-                            default:
-                                System.out.println("Invalid input, please try again...");
-                                break;
+
+                            System.out.print("\nEnter (y/n): ");
+                            String input = scan.nextLine();
+
+                            switch (input) {
+                                case "y":
+                                    User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT", fname, email, phone, sAddress, state);
+                                    userService.register(user);
+                                    new MainMenu(user, new UserService(new UserDAO()), new ReviewService(new ReviewDAO()), new ProductService(new ProductDAO())).start();
+                                    break completeExit;
+                                case "n":
+                                    break confirmExit;
+                                default:
+                                    System.out.println("Invalid input, please try again...");
+                                    break;
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
+
 

@@ -69,6 +69,11 @@ public class Product {
         this.category_id = category_id;
     }
 
+//    public String toFileString() {
+//        return id + ":" + username + ":" + password + ":" + role + "\n";
+//    }
+
+
     @Override
     public String toString() {
         return "Product{" +

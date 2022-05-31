@@ -6,6 +6,7 @@ import com.revature.project0.util.annotations.Inject;
 import com.revature.project0.util.custom_exceptions.InvalidUserException;
 
 import java.util.List;
+import java.util.ArrayList;
 
 //        Purpose: validation (checks username, password and retrieves data from daos (Data Access Object System))
 public class UserService {
@@ -19,12 +20,26 @@ public class UserService {
     }
 
     public User login(String username, String password) {
-        User user = userDAO.getUserByUsernameAndPassword(username, password);
+        User user = new User();
+        List<User> users = userDAO.getAll();
 
-        if (isValidCredentials(user)) return user;
-
-        return null;
+        for (User u : users) {
+            if (u.getUsername().equals(username)) {
+                user.setId(u.getId());
+                user.setUsername(u.getUsername());
+                user.setRole(u.getRole());
+                if (u.getPassword().equals(password)) {
+                    user.setPassword(u.getPassword());
+                    break;
+                }
+            }
+            if (u.getPassword().equals(password)) {
+                user.setPassword(u.getPassword());
+            }
+        }
+        return isValidCredentials(user);
     }
+
 
     public void register(User user) {
         userDAO.save(user);
@@ -49,13 +64,13 @@ public class UserService {
         throw new InvalidUserException("Invalid password. Minimum eight characters, at least one letter, one number and one special character.");
     }
 
-    private boolean isValidCredentials(User user) {
+    private User isValidCredentials(User user) {
 
-        if (user.getUsername() == null && user.getPassword() == null) throw new InvalidUserException("Incorrect username and password.");
+        if (user.getUsername() == null && user.getPassword() == null)
+            throw new InvalidUserException("Incorrect username and password.");
         else if (user.getUsername() == null) throw new InvalidUserException("Incorrect username.");
         else if (user.getPassword() == null) throw new InvalidUserException("Incorrect password.");
-
-        return true;
+        return user;
     }
 
     public User getUserById(String user_id) {

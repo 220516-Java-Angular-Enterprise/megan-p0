@@ -35,7 +35,7 @@ public class MainMenu implements IMenu {
         exit:
         {
             while (true) {
-                System.out.println("| Welcome to main menu " + user.getUsername() + " |");
+                System.out.println("Welcome to main menu " + user.getFname());
                 System.out.println("[1] View all products");
                 System.out.println("[2] View products by category");
                 System.out.println("[3] View past orders");

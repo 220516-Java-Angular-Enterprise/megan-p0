@@ -92,6 +92,24 @@ public class AdminMenu implements IMenu {
 
                 System.out.print("\nStarting Quantity: ");
                 prod.setQuantity(Integer.parseInt(scan.nextLine()));
+
+                System.out.print("\nProduct Category: ");
+                prod.setCategory_id(scan.nextLine());
+
+                System.out.println("\nPlease confirm restaurant (y/n)");
+                System.out.println("\n" + prod);
+
+
+                switch (scan.nextLine()) {
+                    case "y":
+                        productService.register(prod);
+                        break exit;
+                    case "n":
+                        break;
+                    default:
+                        System.out.println("\nInvalid input.");
+                        break;
+                }
             }
         }
     }

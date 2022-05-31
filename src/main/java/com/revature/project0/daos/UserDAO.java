@@ -18,17 +18,22 @@ public class UserDAO implements CrudDAO<User> {
     @Override
     public void save(User obj) {
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO users (id, username, password, email, phone, sAddress, state) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO users (id, username, password, role, fname, email, phone, saddress, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getUsername());
             ps.setString(3, obj.getPassword());
-            ps.setString(4, obj.getEmail());
-            ps.setString(5, obj.getPhone());
-            ps.setString(6, obj.getsAddress());
-            ps.setString(7, obj.getState());
+            ps.setString(4, obj.getRole());
+            ps.setString(5, obj.getFname());
+            ps.setString(6, obj.getEmail());
+            ps.setString(7, obj.getPhone());
+            ps.setString(8, obj.getsAddress());
+            ps.setString(9, obj.getState());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when tyring to save to the database.");
+//            throw new RuntimeException("An error occurred when tyring to save to the database.");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
         }
     }
 
@@ -50,7 +55,21 @@ public class UserDAO implements CrudDAO<User> {
 
     @Override
     public User getById(String id) {
-        return null;
+        User user = new User();
+
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users where id = ?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                user = new User(rs.getString("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"), rs.getString("fname"), rs.getString("email"), rs.getString("phone"), rs.getString("saddress"), rs.getString("state"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+        }
+
+        return user;
     }
 
     @Override
@@ -62,11 +81,23 @@ public class UserDAO implements CrudDAO<User> {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                users.add(new User(rs.getString("id"), rs.getString("username"), rs.getString("role"), rs.getString("email"), rs.getString("phone"), rs.getString("sAddress"), rs.getString("state")));
-            }
+                User user = new User(); // user -> null
+                user.setId(rs.getString("id")); // user (id) -> 1232abce231dsf
+                user.setUsername(rs.getString("username")); // user (username) -> bduong0929
+                user.setPassword(rs.getString("password")); // user (password) -> P@ssw0rd
+                user.setRole(rs.getString("role")); // user (role) -> DEFAULT
+                user.setFname(rs.getString("fname"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                user.setsAddress(rs.getString("saddress"));
+                user.setState(rs.getString("state"));
+                users.add(user);            }
 
         } catch (SQLException e) {
             throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+//            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLState: " + e.getSQLState());
+//            System.out.println("VendorError: " + e.getErrorCode());
         }
 
         return users;
@@ -123,7 +154,7 @@ public class UserDAO implements CrudDAO<User> {
 
     public void updateAddress(String sAddress, String state, String id) {
         try {
-            PreparedStatement ps = con.prepareStatement("UPDATE users SET (sAddress, state) = (?, ?) WHERE id = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE users SET (saddress, state) = (?, ?) WHERE id = ?");
             ps.setString(1, sAddress);
             ps.setString(2, state);
             ps.setString(3, id);

@@ -5,6 +5,8 @@ public class User {
     private String id;
     private String username;
     private String password;
+
+    private String fname;
     private String role;
     private String email;
     private String phone;
@@ -16,10 +18,11 @@ public class User {
     }
 
     // Constructor for User Class (what info goes in)
-    public User(String id, String username, String password, String role, String email, String phone, String sAddress, String state) {
+    public User(String id, String username, String password, String role, String fname, String email, String phone, String sAddress, String state) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.fname = fname;
         this.role = role;
         this.email = email;
         this.phone = phone;
@@ -27,11 +30,8 @@ public class User {
         this.state = state;
     }
 
-    public User(String id, String username, String role, String email, String phone, String sAdress, String state) {
-    }
-
-    public User(String toString, String username, String password, String aDefault) {
-    }
+//    public User(String id, String username, String password, String role, String fname, String email, String phone, String sAddress, String state) {
+//    }
 
     //    Getters/Setters so that data can be retrieved and manipulated
     public String getId() {
@@ -56,6 +56,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFname() {
+        return fname;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
     }
 
     public String getRole() {
@@ -108,6 +116,7 @@ public class User {
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", first name='" + fname + '\'' +
                 ", role='" + role + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +

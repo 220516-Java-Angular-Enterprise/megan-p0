@@ -17,16 +17,20 @@ public class ProductDAO implements CrudDAO<Product>{
     @Override
     public void save(Product obj) {
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO products (id, name, description, price, quantity) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO products (id, name, description, price, quantity, category_id) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getName());
             ps.setString(3, obj.getDescription());
             ps.setInt(4, obj.getPrice());
             ps.setInt(5, obj.getQuantity());
+            ps.setString(6, obj.getCategory_id());
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when tyring to save to the database.");
+//            throw new RuntimeException("An error occurred when tyring to save to the database.");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
         }
     }
 
@@ -65,6 +69,7 @@ public class ProductDAO implements CrudDAO<Product>{
         return product;
     }
 
+
     @Override
     public List<Product> getAll() {
         List<Product> products = new ArrayList<>();
@@ -82,6 +87,7 @@ public class ProductDAO implements CrudDAO<Product>{
 
         return products;
     }
+
 
     public void updateProdName(String name, String id) {
         try {
