@@ -1,18 +1,13 @@
 package com.revature.project0.ui;
 
-import com.revature.project0.models.Category;
-import com.revature.project0.models.Product;
-import com.revature.project0.models.Review;
-import com.revature.project0.models.User;
-import com.revature.project0.services.CategoryService;
-import com.revature.project0.services.ProductService;
-import com.revature.project0.services.ReviewService;
-import com.revature.project0.services.UserService;
+import com.revature.project0.models.*;
+import com.revature.project0.services.*;
 import com.revature.project0.util.annotations.Inject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainMenu implements IMenu {
 
@@ -25,12 +20,18 @@ public class MainMenu implements IMenu {
 
     private final CategoryService categoryService;
 
-    public MainMenu(User user, UserService userService, ReviewService reviewService, ProductService productService, CategoryService categoryService) {
+    private final OrderService orderService;
+
+    private final StoreService storeService;
+
+    public MainMenu(User user, UserService userService, ReviewService reviewService, ProductService productService, CategoryService categoryService, OrderService orderService, StoreService storeService) {
         this.user = user;
         this.userService = userService;
         this.reviewService = reviewService;
         this.productService = productService;
         this.categoryService = categoryService;
+        this.orderService = orderService;
+        this.storeService = storeService;
     }
 
 
@@ -58,7 +59,7 @@ public class MainMenu implements IMenu {
                         viewByCat();
                         break;
                     case "3":
-                        viewPastOrder();
+                        viewPastOrder(user.getId());
                         break;
                     case "4":
                         updateProfile();
@@ -79,8 +80,9 @@ public class MainMenu implements IMenu {
         List<Product> prods = productService.getAllProd();
         List<Product> cart = new ArrayList<>();
 
-        exit:
+        completeExit:
         {
+//            prints a list of products
             while (true) {
                 System.out.println("Please select a product");
 
@@ -90,114 +92,78 @@ public class MainMenu implements IMenu {
                 System.out.print("Enter: ");
                 int input = scan.nextInt() - 1;
 
+            exit2:
+            {
                 if (input >= 0 && input < prods.size()) {
                     Product selectedProd = prods.get(input);
                     Product prod = productService.getById(selectedProd.getId());
-                    cart.add(prod);
-                }
+                    System.out.println("Your chosen product is " + prod.getName());
 
+//                    selection();
+                    System.out.println("[1] Add to order");
+                    System.out.println("[2] Read reviews");
+                    System.out.println("[3] Write a review");
+                    System.out.println("[x] Exit");
+
+                    System.out.print("\nEnter: ");
+                    String select = scan.nextLine();
+
+                    switch (scan.nextLine()) {
+                        case "1":
+                            addToOrder(prod);
+                            break;
+                        case "2":
+                            readReview();
+                            break;
+                        case "3":
+                            leaveReview();
+                            break;
+                        case "x":
+                            break completeExit;
+                        default:
+                            System.out.println("\nInvalid input.");
+                            break;
+                    }
+                }
+            }
+            }
             }
         }
-    }
 
-    private void selection() {
+
+    private void addToOrder(Product prod) {
         Scanner scan = new Scanner(System.in);
+        String prodID = prod.getId();
+        int quantity;
+        String randomOrderId = UUID.randomUUID().toString();
+        List<String> cart = new ArrayList<>();
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String time = dateFormat.format(date);
 
-        System.out.println("[1] Add to order");
-        System.out.println("[2] Read reviews");
-        System.out.println("[3] Write a review");
-        System.out.println("[x] Exit");
+        exit:
+        {
+            while(true) {
+                System.out.println("How many " + prod.getName() + "'s would you like: ");
+                quantity = scan.nextInt();
+                int prodInventory = prod.getQuantity();
+                if (prodInventory >= quantity) {
+                    int price = prod.getPrice() * quantity;
+                    String user_id = user.getId();
+                    Order order = new Order(randomOrderId, time, price,user_id, "06218a86-4d08-4d34-88a2-421171700982");
+                    orderService.register(order);
 
-        System.out.println("Enter: ");
+                    System.out.println("order made successfully");
+                    break;
 
-    }
-
-    private void addToOrder(List<Product> prods) {
-
+                } else System.out.println("\nThere are only " + prodInventory + " left in stock"); break;
+            }
+        }
     }
 
     private void readReview() {}
 
     private void leaveReview() {}
-
-    private void viewAllProd() {
-        Scanner scan = new Scanner(System.in);
-        List<Product> prod = productService.getAllProd();
-
-        completeExit:
-        {
-            while (true) {
-                System.out.println("Please select a product");
-
-                for (int i = 0; i < prod.size(); i++) {
-                    System.out.println("[" + (i + 1) + "] " + prod.get(i).getName());
-                }
-
-                System.out.print("\nEnter: ");
-                int input = scan.nextInt() - 1;
-
-                if (input >= 0 && input < prod.size()) {
-                    Product selectedProd = prod.get(input);
-                    List<Review> reviews = reviewService.getReviewByProd(selectedProd.getId());
-
-                    System.out.println("Reviews for " + selectedProd.getName());
-
-                    if (!reviews.isEmpty()) {
-                        exit:
-                        {
-                            while (true) {
-                                int newLine = 0;
-                                for (Review r : reviews) {
-                                    User userReview = userService.getUserById(r.getUser_id());
-                                    System.out.println(r.getMsg() + "\nRating: " + r.getRating() + "\nUser: " + userReview.getUsername());
-
-                                    if (newLine < reviews.size() - 1) System.out.println();
-
-                                    newLine++;
-                                }
-
-                                scan.nextLine();
-
-                                System.out.println("\nDo you want to leave a review? (y/n)");
-                                System.out.print("\nEnter: ");
-
-                                switch (scan.nextLine()) {
-                                    case "y":
-                                        break;
-                                    case "n":
-                                        break exit;
-                                    default:
-                                        System.out.println("\nInvalid input!");
-                                        break;
-                                }
-                            }
-                        }
-                    } else {
-                        exit:
-                        {
-                            scan.nextLine();
-
-                            System.out.println("No reviews yet!");
-                            System.out.println("\nDo you want to leave a review? (y/n)");
-                            System.out.print("\nEnter: ");
-
-                            switch (scan.nextLine()) {
-                                case "y":
-                                    break;
-                                case "n":
-                                    break exit;
-                                default:
-                                    System.out.println("\nInvalid input!");
-                                    break;
-                            }
-                        }
-                    }
-                } else {
-                    System.out.println("\nInvalid product selection.");
-                }
-            }
-        }
-    }
 
     private void viewByCat() {
         Scanner scan = new Scanner(System.in);
@@ -250,7 +216,39 @@ public class MainMenu implements IMenu {
 
     }
 
-    private void viewPastOrder() {
+    private void viewPastOrder(String user_id) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Your Order History");
+        List<Order> orderHist = orderService.userOrders(user.getId());
+
+//        Streams (learned in class 5/31) Will list orders by price
+        List<Order> highToLow = orderHist.stream().sorted(Comparator.comparingInt(Order::getPrice)).collect(Collectors.toList());
+        List<Order> lowToHigh = orderHist.stream().sorted(Comparator.comparingInt(Order::getPrice)).collect(Collectors.toList());
+
+        exit:
+        {
+            while(true) {
+                System.out.println("[1] View orders price Low to High");
+                System.out.println("[2] View orders price High to Low");
+                System.out.println("[x] Back");
+
+                System.out.println("\nEnter: ");
+
+                switch (scan.nextLine()) {
+                    case "1":
+                        lowToHigh.forEach(System.out::println);
+                        break;
+                    case "2":
+                        highToLow.forEach(System.out::println);
+                        break;
+                    case "x":
+                        break exit;
+                    default:
+                        System.out.println("\nInvalid input.");
+                        break;
+                }
+            }
+        }
     }
 
     private void updateProfile() {

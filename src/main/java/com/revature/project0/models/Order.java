@@ -3,13 +3,13 @@ package com.revature.project0.models;
 public class Order {
     private String id;
     private String time;
-    private float price;
+    private int price;
     private String user_id;
     private String store_id;
 
     public Order(){}
 
-    public Order(String id, String time, float price, String user_id, String store_id) {
+    public Order(String id, String time, int price, String user_id, String store_id) {
         this.id = id;
         this.time = time;
         this.price = price;
@@ -33,11 +33,11 @@ public class Order {
         this.time = time;
     }
 
-    public float getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(int price) {
         this.price = price;
     }
     public String getUser_id() {

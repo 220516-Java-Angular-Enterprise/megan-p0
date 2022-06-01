@@ -21,6 +21,9 @@ public class StoreService {
         return storeDAO.getAll();
     }
 
+    public Store getById(String id) {
+        return storeDAO.getById(id);
+    }
 
 
 }
